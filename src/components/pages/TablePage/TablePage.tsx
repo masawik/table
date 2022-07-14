@@ -2,6 +2,7 @@ import React from 'react'
 import Table from "../../Table/Table"
 import { IColumn, TSortingState } from "../../Table/Table.types"
 import { Unpacked } from "../../../helpers/typeHelpers"
+import Pagination from "../../Pagination/Pagination"
 
 const mockData = [
   {
@@ -33,6 +34,7 @@ const mockData = [
     footLength: '24'
   },
 ]
+
 type TData = Unpacked<typeof mockData>
 const columns: IColumn<TData>[] = [
   {
@@ -65,13 +67,20 @@ const TablePage = () => {
   }
 
   return (
-    <div className="row mt-3">
-      <Table
-        data={mockData}
-        columns={columns}
-        onSort={sortHandler}
-      />
-    </div>
+    <>
+      <div className="row mt-3 mb-3">
+        <Table
+          data={mockData}
+          columns={columns}
+          onSort={sortHandler}
+        />
+      </div>
+      <div className="row">
+        {/*<div className="d-flex justify-content-center">*/}
+          <Pagination/>
+        {/*</div>*/}
+      </div>
+    </>
   )
 }
 
