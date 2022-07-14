@@ -17,3 +17,10 @@ export interface ITableProps<T extends TDataWithId> {
 }
 
 export type TColumnOrderState<T extends TDataWithId> = Array<IColumn<T>['dataKey']>
+
+export enum ESortDirections {
+  ASC = 'ASC',
+  DESC = 'DESC'
+}
+
+export type TSortingState<T extends TDataWithId> = { dataKey: keyof T, direction: ESortDirections }

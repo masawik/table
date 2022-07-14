@@ -1,9 +1,11 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo, useRef, useState } from 'react'
 import styles from './Table.module.css'
 import { ITableProps, TColumnOrderState, TDataWithId } from "./Table.types"
 
 
 function Table<T extends TDataWithId>(props: ITableProps<T>) {
+  const [sortingState, setSortingState] = useState<{}>()
+
   const columnOrderRef = useRef<TColumnOrderState<T>>([])
 
   const $TableHeaderRow = useMemo(() => {
