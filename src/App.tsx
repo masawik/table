@@ -2,6 +2,8 @@ import React from 'react'
 import Table from "./components/Table/Table"
 import { IColumn } from "./components/Table/Table.types"
 import { Unpacked } from "./helpers/typeHelpers"
+import SortableTable from "./components/SortableTable/SortableTable"
+import { ISortableColumn } from "./components/SortableTable/SortableTable.types"
 
 const mockData = [
   {
@@ -33,7 +35,7 @@ const mockData = [
     footLength: '24'
   },
 ]
-const columns: IColumn<Unpacked<typeof mockData>>[] = [
+const columns: ISortableColumn<Unpacked<typeof mockData>>[] = [
   {
     header: 'Россия',
     dataKey: 'russia',
@@ -52,13 +54,12 @@ const columns: IColumn<Unpacked<typeof mockData>>[] = [
   {
     header: 'Длина стопы',
     dataKey: 'footLength',
-    sortable: true
   },
 ]
 
 function App() {
 
-  return (<Table data={mockData} columns={columns}/>)
+  return (<SortableTable data={mockData} columns={columns}/>)
 }
 
 export default App
