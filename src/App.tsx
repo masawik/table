@@ -1,9 +1,7 @@
 import React from 'react'
 import Table from "./components/Table/Table"
-import { IColumn } from "./components/Table/Table.types"
+import { IColumn, TSortingState } from "./components/Table/Table.types"
 import { Unpacked } from "./helpers/typeHelpers"
-import SortableTable from "./components/SortableTable/SortableTable"
-import { ISortableColumn } from "./components/SortableTable/SortableTable.types"
 
 const mockData = [
   {
@@ -35,14 +33,15 @@ const mockData = [
     footLength: '24'
   },
 ]
-const columns: ISortableColumn<Unpacked<typeof mockData>>[] = [
+type TData = Unpacked<typeof mockData>
+const columns: IColumn<TData>[] = [
   {
     header: 'Россия',
     dataKey: 'russia',
     sortable: true
   },
   {
-    header: <div style={{ color: 'orange' }}>Великобритания</div>,
+    header: 'Великобритания',
     dataKey: 'greatBritian',
     sortable: true
   },
@@ -59,7 +58,19 @@ const columns: ISortableColumn<Unpacked<typeof mockData>>[] = [
 
 function App() {
 
-  return (<SortableTable data={mockData} columns={columns}/>)
+  const sortHandler = (sortingState: TSortingState<TData>) => {
+    if (sortingState) {
+      console.log(sortingState)
+    }
+  }
+
+  return (
+    <Table
+      data={mockData}
+      columns={columns}
+      onSort={sortHandler}
+    />
+  )
 }
 
 export default App
