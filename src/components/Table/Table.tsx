@@ -1,18 +1,16 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import styles from './Table.module.css'
 import { ITableProps, TColumnOrderState, TDataWithId } from "./Table.types"
 
 
 function Table<T extends TDataWithId>(props: ITableProps<T>) {
-
-  //todo возможно, стоит хранить как-то по другому
-  const columnOrder = [] as TColumnOrderState<T>
+  const columnOrderRef = useRef<TColumnOrderState<T>>([])
 
   const $TableHeaderRow = useMemo(() => {
-    columnOrder.length = 0 //clear column order array
+    columnOrderRef.current.length = 0 //clear column order array
 
     const $thList = props.columns.map(column => {
-      columnOrder.push(column.dataKey)
+      columnOrderRef.current.push(column.dataKey)
       return (
         <th key={String(column.dataKey)}>
           {column.header}
@@ -27,8 +25,7 @@ function Table<T extends TDataWithId>(props: ITableProps<T>) {
 
   const $TableBodyRows = useMemo(() =>
     props.data.map(dataItem => {
-
-      const $tdList = columnOrder.map(dataKey => (
+      const $tdList = columnOrderRef.current.map(dataKey => (
         <td key={`${dataItem.id}_${String(dataKey)}`}>
           {dataItem[dataKey]}
         </td>
