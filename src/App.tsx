@@ -65,11 +65,17 @@ function App() {
   }
 
   return (
-    <Table
-      data={mockData}
-      columns={columns}
-      onSort={sortHandler}
-    />
+    <div className="container">
+      <div className="row mt-3">
+        <div className="mx-auto">
+          <Table
+            data={mockData}
+            columns={columns}
+            onSort={sortHandler}
+          />
+        </div>
+      </div>
+    </div>
   )
 }
 

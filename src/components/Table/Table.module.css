@@ -1,21 +1,28 @@
-.table {
-  border-collapse: collapse;
+.sortableTh {
+  position: relative;
+  user-select: none;
 }
 
-td, th {
-  padding: 5px;
-  border: 1px solid black;
-  text-align: center;
+.sortableTh::after {
+  position: absolute;
+  right: 0;
+  display: none;
+  width: 25px;
+  height: 25px;
+  font-size: 18px;
+  transform-origin: center;
+  content: "<";
 }
 
-.sortable {
-  cursor: pointer;
+.sortableThAsc::after,
+.sortableThDesc::after {
+  display: inline-block;
 }
 
-.sortedAsc {
-  color: green;
+.sortableThAsc::after {
+  transform: rotate(90deg);
 }
 
-.sortedDesc {
-  color: red;
+.sortableThDesc::after {
+  transform: translateX(-5px) rotate(-90deg);
 }

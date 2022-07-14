@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import styles from './Table.module.css'
 import { ESortDirections, ITableProps, TColumnOrderState, TDataWithId, TSortingState } from "./Table.types"
-
+import styles from './Table.module.css'
+import cn from 'classnames'
 
 function Table<T extends TDataWithId>(props: ITableProps<T>) {
   const [sortingState, setSortingState] = useState<TSortingState<T>>(null)
@@ -35,22 +35,26 @@ function Table<T extends TDataWithId>(props: ITableProps<T>) {
 
     const $thList = props.columns.map(column => {
       columnOrderRef.current.push(column.dataKey)
+
       const dataKeyString = String(column.dataKey)
 
-      //todo remove this shame
-      let thClassNames = ''
-      if (column.sortable) thClassNames += ` ${styles.sortable}`
-      if (sortingState?.dataKey === column.dataKey) {
-        if (sortingState.direction === ESortDirections.ASC) {
-          thClassNames += ` ${styles.sortedAsc}`
-        } else thClassNames += ` ${styles.sortedDesc}`
-      }
+      const isThisColumnSorted = sortingState?.dataKey === column.dataKey
+      const isSortDirectionAsc = sortingState?.direction === ESortDirections.ASC
 
       return (
         <th
-          className={thClassNames}
           key={dataKeyString}
-          onClick={column.sortable ? () => sortHandler(dataKeyString) : undefined}
+          className={cn({
+            [`text-success ${styles.sortableThAsc}`]: isThisColumnSorted && isSortDirectionAsc,
+            [`text-danger ${styles.sortableThDesc}`]: isThisColumnSorted && !isSortDirectionAsc,
+            [`btn-link ${styles.sortableTh}`]: column.sortable
+          })}
+
+          {...(column.sortable && {
+              role: "button",
+              onClick: () => sortHandler(dataKeyString)
+            }
+          )}
         >
           {column.header}
         </th>
@@ -58,19 +62,18 @@ function Table<T extends TDataWithId>(props: ITableProps<T>) {
     })
 
     return (
-      <tr>{$thList}</tr>
+      <tr className="table-primary">{$thList}</tr>
     )
   }, [props.columns, sortingState])
 
-  const $TableBodyRows = useMemo(() =>
-    props.data.map(dataItem => {
+  const $TableBodyRows = useMemo(() => props.data.map(dataItem => {
       const $tdList = columnOrderRef.current.map(dataKey => (
         <td key={`${dataItem.id}_${String(dataKey)}`}>
           {dataItem[dataKey]}
         </td>
       ))
 
-      return (
+    return (
         <tr key={dataItem.id}>
           {$tdList}
         </tr>
@@ -78,11 +81,11 @@ function Table<T extends TDataWithId>(props: ITableProps<T>) {
     }), [props.data])
 
   return (
-    <table className={styles.table}>
+    <table className="table table-light table-hover table-bordered caption-top text-center">
       <caption>Таблица размеров обуви</caption>
 
       <thead>{$TableHeaderRow}</thead>
-      <tbody>{$TableBodyRows}</tbody>
+      <tbody className="table-group-divider">{$TableBodyRows}</tbody>
     </table>
   )
 }
