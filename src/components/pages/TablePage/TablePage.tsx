@@ -5,7 +5,7 @@ import Pagination from "../../Pagination/Pagination"
 import { TSampleTableData } from "../../../Api/Api.types"
 import { SampleTableContext } from "../../../store/sampleTable/context"
 import Api from "../../../Api/Api"
-import { EDataActionTypes } from "../../../store/sampleTable/reducers"
+import { loadData } from "../../../store/sampleTable/actions"
 
 const columns: IColumn<TSampleTableData>[] = [
   {
@@ -41,7 +41,7 @@ const TablePage = () => {
         'sort_desc': true,
         'sort_key': 'count'
       })
-      dispatch({ type: EDataActionTypes.LOAD, payload: result })
+      dispatch(loadData(result))
     }
     fetchData()
   }, [dispatch])
