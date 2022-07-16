@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useCallback, useContext, useEffect } from 'react'
 import Table from "../../Table/Table"
 import { ESortDirections, IColumn, TSortingState } from "../../Table/Table.types"
 import Pagination from "../../Pagination/Pagination"
@@ -44,8 +44,12 @@ const TablePage = () => {
         ...(sortKey && { 'sort_key': sortKey })
       })
       dispatch(loadData(result.data))
-      dispatch(setTotalPages(result.totalPages))
+
+      if (result.totalPages !== state.pagination.totalPages) {
+        dispatch(setTotalPages(result.totalPages))
+      }
     }
+    
     fetchData()
   }, [dispatch, state.settings, state.pagination.currentPage])
 
@@ -57,10 +61,10 @@ const TablePage = () => {
     }
   }
 
-  const pageChangeHandler = (newPage: number) => {
+  const pageChangeHandler = useCallback((newPage: number) => {
     if (state.pagination.currentPage === newPage) return
     dispatch(setCurrentPage(newPage))
-  }
+  }, [dispatch, state.pagination.currentPage])
 
   return (
     <>

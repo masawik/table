@@ -1,5 +1,6 @@
-import React, { FormEvent, useRef } from 'react'
+import React, { FormEvent, useMemo, useRef } from 'react'
 import cn from "classnames"
+import { range } from "../../helpers/range"
 
 const MAX_PAGE_BUTTONS_COUNT = 10
 
@@ -9,11 +10,14 @@ interface IPaginationProps {
   onPageChange: (page: number) => void
 }
 
+const getNavigationButtonPlaceholder = (key: string) => (<li key={key} className="page-item disabled">
+  <button aria-hidden={true} className="page-link" disabled>...</button>
+</li>)
+
 const Pagination: React.FC<IPaginationProps> =
   ({ onPageChange, currentPage, totalPages }) => {
-
     const fastTravelInputRef = useRef<HTMLInputElement>(null)
-    const showFastTravelForm = totalPages > MAX_PAGE_BUTTONS_COUNT * 2
+    const showFastTravelForm = totalPages > MAX_PAGE_BUTTONS_COUNT * 3
     const fastTravelFormSubmitHandler = (e: FormEvent) => {
       e.preventDefault()
       if (fastTravelInputRef.current) {
@@ -21,44 +25,76 @@ const Pagination: React.FC<IPaginationProps> =
       }
     }
 
-    const $pageButtons = new Array(Math.min(MAX_PAGE_BUTTONS_COUNT - 2, totalPages))
-      .fill(null)
-      .map((_, index) => {
-        const pageNumber = index
-        const pageNumberView = index + 1
+    const $pageButtons = useMemo(() => {
+      let countOfButtonsToGenerate = MAX_PAGE_BUTTONS_COUNT - 2
+      let buttonRange = (MAX_PAGE_BUTTONS_COUNT / 2) - 1
+      const $result: Array<JSX.Element> = []
 
-        return (
+      //check if need to crop begin buttons
+      if (currentPage > buttonRange) {
+        $result.push((
           <li
-            key={index}
-            onClick={onPageChange.bind(this, pageNumber)}
-
-            className={cn({
-              'page-item': true,
-              'active': currentPage === pageNumber
-            })}
-          >
-            <button className="page-link">{pageNumberView}</button>
+            key={'firstBtn'}
+            onClick={onPageChange.bind(this, 0)}
+            className={'page-item'}>
+            <button className="page-link">{1}</button>
           </li>
-        )
-      })
+        ))
+        $result.push(getNavigationButtonPlaceholder('left_placeholder'))
 
-    //add placeholder and last page button
-    if (totalPages > MAX_PAGE_BUTTONS_COUNT) {
-      $pageButtons.push((
-        <li key="btn-placeholder" className="page-item disabled">
-          <button aria-hidden={true} className="page-link" disabled>...</button>
-        </li>
-      ))
+        countOfButtonsToGenerate -= 2
+        buttonRange -= 1
+      }
 
-      $pageButtons.push((
-        <li
-          key={'lastBtn'}
-          onClick={onPageChange.bind(this, totalPages)}
-          className={'page-item'}>
-          <button className="page-link">{totalPages}</button>
-        </li>
-      ))
-    }
+      //check if need to crop end buttons
+      const $endButtons: Array<JSX.Element> = []
+      if (totalPages - currentPage > buttonRange) {
+        $endButtons.push(getNavigationButtonPlaceholder('right_placeholder'))
+        $endButtons.push((
+          <li
+            key={'lastBtn'}
+            onClick={onPageChange.bind(this, totalPages)}
+            className={'page-item'}>
+            <button className="page-link">{totalPages + 1}</button>
+          </li>
+        ))
+      } else {
+        countOfButtonsToGenerate += 2
+        buttonRange += 1
+      }
+
+      let rangeStart: number
+      if (currentPage - buttonRange < 0) {
+        //exclusion of negative pages
+        rangeStart = 0
+      } else if (currentPage + buttonRange > totalPages) {
+        //exclusion of non-existent pages
+        rangeStart = (totalPages + 1) - countOfButtonsToGenerate
+      } else {
+        rangeStart = currentPage - buttonRange
+      }
+
+      range(countOfButtonsToGenerate, rangeStart)
+        .forEach(pageNumber => {
+          const pageNumberView = pageNumber + 1
+          $result.push((
+            <li
+              key={pageNumber}
+              onClick={onPageChange.bind(this, pageNumber)}
+
+              className={cn({
+                'page-item': true,
+                'active': currentPage === pageNumber
+              })}
+            >
+              <button className="page-link">{pageNumberView}</button>
+            </li>
+          ))
+        })
+
+      $result.push(...$endButtons)
+      return $result
+    }, [currentPage, totalPages])
 
     return (
       <div className="d-flex flex-column align-items-center">

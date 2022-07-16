@@ -51,8 +51,8 @@ export const paginationReducer = (state: TPaginationState, action: TActions) => 
 
     case ESettingsActionTypes.SET_SORT_DESC:
     case ESettingsActionTypes.SET_SORT_KEY:
-      return { ...state, currentPage: 0 }
-
+      if (state.currentPage !== 0) return { ...state, currentPage: 0 }
+      else return state
     default:
       return state
   }
