@@ -12,3 +12,8 @@ export type TSelectItemsParams = {
   'sort_key'?: string
   'sort_desc': boolean
 }
+
+export type TSelectDataResponse = {
+  data: TSampleTableData[],
+  totalPages: number
+}

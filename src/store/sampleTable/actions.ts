@@ -26,4 +26,22 @@ export const setSortDesc = (sortDesc: boolean): TSettingsSetSortDesc =>
 
 export type TSettingsActions = TSettingsSetSortKeyAction | TSettingsSetSortDesc
 
-export type TActions = TDataActions | TSettingsActions
+
+// ----- pagination actions -----
+export enum EPaginationActionTypes {
+  SET_CURRENT_PAGE = 'SET_CURRENT_PAGE',
+  SET_TOTAL_PAGES = 'SET_TOTAL_PAGES'
+}
+
+type TPaginationSetCurrentPage = { type: EPaginationActionTypes.SET_CURRENT_PAGE, payload: number }
+export const setCurrentPage = (page: number): TPaginationSetCurrentPage =>
+  ({ type: EPaginationActionTypes.SET_CURRENT_PAGE, payload: page })
+
+type TPaginationSetTotalPages = { type: EPaginationActionTypes.SET_TOTAL_PAGES, payload: number }
+export const setTotalPages = (pages: number): TPaginationSetTotalPages =>
+  ({ type: EPaginationActionTypes.SET_TOTAL_PAGES, payload: pages })
+
+export type TPaginationActions = TPaginationSetCurrentPage | TPaginationSetTotalPages
+
+// ---- all actions -----
+export type TActions = TDataActions | TSettingsActions | TPaginationActions

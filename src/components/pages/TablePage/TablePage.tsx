@@ -5,7 +5,7 @@ import Pagination from "../../Pagination/Pagination"
 import { TSampleTableData } from "../../../Api/Api.types"
 import { SampleTableContext } from "../../../store/sampleTable/context"
 import Api from "../../../Api/Api"
-import { loadData, setSortDesc, setSortKey } from "../../../store/sampleTable/actions"
+import { loadData, setSortDesc, setSortKey, setTotalPages } from "../../../store/sampleTable/actions"
 
 const columns: IColumn<TSampleTableData>[] = [
   {
@@ -43,10 +43,11 @@ const TablePage = () => {
         'sort_desc': sortDesc,
         ...(sortKey && { 'sort_key': sortKey })
       })
-      dispatch(loadData(result))
+      dispatch(loadData(result.data))
+      dispatch(setTotalPages(result.totalPages))
     }
     fetchData()
-  }, [dispatch, state.settings])
+  }, [dispatch, state.settings, state.pagination.currentPage])
 
   const sortHandler = (sortingState: TSortingState<TSampleTableData>) => {
     if (sortingState) {
@@ -68,7 +69,10 @@ const TablePage = () => {
 
       <div className="row">
         {/*<div className="d-flex justify-content-center">*/}
-        <Pagination/>
+        {
+          state.pagination.totalPages > 1
+          && <Pagination/>
+        }
         {/*</div>*/}
       </div>
     </>
