@@ -12,7 +12,8 @@ export interface IColumn<T extends TDataWithId> {
 export interface ITableProps<T extends TDataWithId> {
   columns: IColumn<T>[],
   data: T[],
-  onSort?: (sortingState: TSortingState<T>) => void
+  onSort?: (sortingState: TSortingState<T>) => void,
+  caption: string
 }
 
 export type TColumnOrderState<T extends TDataWithId> = Array<IColumn<T>['dataKey']>

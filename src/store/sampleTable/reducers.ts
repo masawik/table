@@ -16,7 +16,7 @@ export const dataReducer = (state: TDataState, action: TActions) => {
 
 // ----- settings -----
 const settingsInitialState = {
-  rowsPerPage: 5,
+  rowsPerPage: 10,
   sortKey: null as null | string,
   sortDesc: false as boolean
 }

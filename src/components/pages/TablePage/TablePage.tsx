@@ -6,6 +6,7 @@ import { TSampleTableData } from "../../../Api/Api.types"
 import { SampleTableContext } from "../../../store/sampleTable/context"
 import Api from "../../../Api/Api"
 import { loadData, setCurrentPage, setSortDesc, setSortKey, setTotalPages } from "../../../store/sampleTable/actions"
+import Filters, { EFilterTypes, TFilterOption, TOnFilterSubmitParams } from "../../Filters/Filters"
 
 const columns: IColumn<TSampleTableData>[] = [
   {
@@ -30,6 +31,25 @@ const columns: IColumn<TSampleTableData>[] = [
   }
 ]
 
+const filters: TFilterOption = {
+  date: {
+    header: 'Дата',
+    filterTypes: [EFilterTypes.EQUAL, EFilterTypes.LESS, EFilterTypes.GREATER]
+  },
+  name: {
+    header: 'Название',
+    filterTypes: [EFilterTypes.EQUAL, EFilterTypes.CONTAINS]
+  },
+  count: {
+    header: 'Количество',
+    filterTypes: [EFilterTypes.EQUAL_NUMBER, EFilterTypes.LESS, EFilterTypes.GREATER]
+  },
+  distance: {
+    header: 'Дистанция',
+    filterTypes: [EFilterTypes.EQUAL_NUMBER, EFilterTypes.LESS, EFilterTypes.GREATER]
+  }
+}
+
 const TablePage = () => {
   const { state, dispatch } = useContext(SampleTableContext)
 
@@ -49,7 +69,7 @@ const TablePage = () => {
         dispatch(setTotalPages(result.totalPages))
       }
     }
-    
+
     fetchData()
   }, [dispatch, state.settings, state.pagination.currentPage])
 
@@ -66,18 +86,27 @@ const TablePage = () => {
     dispatch(setCurrentPage(newPage))
   }, [dispatch, state.pagination.currentPage])
 
+  const filterHandler = (params: TOnFilterSubmitParams) => {
+    console.log(params)
+    alert('Не успеваю доделать фильтры')
+  }
+
   return (
     <>
-      <div className="row mt-3 mb-3">
+      <div className="row mb-1 mt-3">
         <Table
           data={state.data}
           columns={columns}
           onSort={sortHandler}
+          caption='таблица - пример'
         />
       </div>
 
+      <div className="row mb-2">
+        <Filters filters={filters} onFilter={filterHandler}/>
+      </div>
+
       <div className="row">
-        {/*<div className="d-flex justify-content-center">*/}
         {
           state.pagination.totalPages > 1
           &&
@@ -87,7 +116,6 @@ const TablePage = () => {
             onPageChange={pageChangeHandler}
           />
         }
-        {/*</div>*/}
       </div>
     </>
   )

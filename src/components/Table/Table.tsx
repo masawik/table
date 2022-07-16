@@ -3,6 +3,8 @@ import { ESortDirections, ITableProps, TColumnOrderState, TDataWithId, TSortingS
 import styles from './Table.module.css'
 import cn from 'classnames'
 
+//todo добавить лоадер
+
 function Table<T extends TDataWithId>(props: ITableProps<T>) {
   const [sortingState, setSortingState] = useState<TSortingState<T>>(null)
 
@@ -82,7 +84,7 @@ function Table<T extends TDataWithId>(props: ITableProps<T>) {
 
   return (
     <table className="table table-light table-hover table-bordered caption-top text-center">
-      <caption>Таблица размеров обуви</caption>
+      <caption>{props.caption}</caption>
 
       <thead>{$TableHeaderRow}</thead>
       <tbody className="table-group-divider">{$TableBodyRows}</tbody>
