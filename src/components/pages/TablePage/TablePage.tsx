@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import Table from "../../Table/Table"
 import { IColumn, TSortingState } from "../../Table/Table.types"
 import Pagination from "../../Pagination/Pagination"
-import { ISampleTableData } from "../../../Api/Api.types"
+import { TSampleTableData } from "../../../Api/Api.types"
 import { SampleTableContext } from "../../../SampleTableContext/SampleTableContext"
 import Api from "../../../Api/Api"
 
-const columns: IColumn<ISampleTableData>[] = [
+const columns: IColumn<TSampleTableData>[] = [
   {
     header: 'Дата',
     dataKey: 'date',
@@ -30,7 +30,7 @@ const columns: IColumn<ISampleTableData>[] = [
 ]
 
 const TablePage = () => {
-  const [tableData, setTableData] = useState<ISampleTableData[]>([])
+  const [tableData, setTableData] = useState<TSampleTableData[]>([])
   const { itemsPerPage, sortBy, sortDirection } = useContext(SampleTableContext)
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const TablePage = () => {
     fetchData()
   }, [itemsPerPage, sortBy, sortDirection])
 
-  const sortHandler = (sortingState: TSortingState<ISampleTableData>) => {
+  const sortHandler = (sortingState: TSortingState<TSampleTableData>) => {
     if (sortingState) {
       console.log(sortingState)
     }

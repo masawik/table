@@ -1,8 +1,7 @@
 import { TStringOrNumber } from "../../helpers/typeHelpers"
 
-type TData = { [key: TStringOrNumber]: TStringOrNumber }
 type TObjectWithId = { id: TStringOrNumber }
-export type TDataWithId = TData & TObjectWithId
+export type TDataWithId = Record<string, unknown> & TObjectWithId
 
 export interface IColumn<T extends TDataWithId> {
   header: string | JSX.Element,

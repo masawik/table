@@ -67,18 +67,18 @@ function Table<T extends TDataWithId>(props: ITableProps<T>) {
   }, [props.columns, sortingState])
 
   const $TableBodyRows = useMemo(() => props.data.map(dataItem => {
-      const $tdList = columnOrderRef.current.map(dataKey => (
-        <td key={`${dataItem.id}_${String(dataKey)}`}>
-          {dataItem[dataKey]}
-        </td>
-      ))
+    const $tdList = columnOrderRef.current.map(dataKey => (
+      <td key={`${dataItem.id}_${String(dataKey)}`}>
+        {String(dataItem[dataKey])}
+      </td>
+    ))
 
     return (
-        <tr key={dataItem.id}>
-          {$tdList}
-        </tr>
-      )
-    }), [props.data])
+      <tr key={dataItem.id}>
+        {$tdList}
+      </tr>
+    )
+  }), [props.data])
 
   return (
     <table className="table table-light table-hover table-bordered caption-top text-center">

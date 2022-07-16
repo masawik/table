@@ -1,4 +1,4 @@
-export interface ISampleTableData {
+export type TSampleTableData = {
   id: number,
   date: number,
   name: string,

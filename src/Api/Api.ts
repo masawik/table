@@ -1,17 +1,17 @@
 import axios, { AxiosResponse } from "axios"
-import { ISampleTableData, TSelectItemsParams } from "./Api.types"
+import { TSampleTableData, TSelectItemsParams } from "./Api.types"
 import { convertObjectToQueryParamString } from "./helpers"
 
 
 class Api {
   private API_URL = 'http://localhost:3010/api'
 
-  async selectData(params: TSelectItemsParams): Promise<ISampleTableData[]> {
-    let response: AxiosResponse<ISampleTableData[]>
+  async selectData(params: TSelectItemsParams): Promise<TSampleTableData[]> {
+    let response: AxiosResponse<TSampleTableData[]>
     const reqUrl = `${this.API_URL}/table-items?${convertObjectToQueryParamString(params)}`
 
     try {
-      response = await axios.get<ISampleTableData[]>(reqUrl)
+      response = await axios.get<TSampleTableData[]>(reqUrl)
     } catch (err) {
       throw new Error(`error while fetching data. ${err}`)
     }
