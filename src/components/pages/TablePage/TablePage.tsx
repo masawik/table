@@ -1,66 +1,52 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Table from "../../Table/Table"
 import { IColumn, TSortingState } from "../../Table/Table.types"
-import { Unpacked } from "../../../helpers/typeHelpers"
 import Pagination from "../../Pagination/Pagination"
+import { ISampleTableData } from "../../../Api/Api.types"
+import { SampleTableContext } from "../../../SampleTableContext/SampleTableContext"
+import Api from "../../../Api/Api"
 
-const mockData = [
+const columns: IColumn<ISampleTableData>[] = [
   {
-    id: 1,
-    russia: '34.5',
-    greatBritian: '3.5',
-    europe: '36',
-    footLength: '23'
+    header: 'Дата',
+    dataKey: 'date',
+    sortable: false
   },
   {
-    id: 2,
-    russia: '35.5',
-    greatBritian: '4',
-    europe: '36.⅔',
-    footLength: '23–23,5'
-  },
-  {
-    id: 3,
-    russia: '36',
-    greatBritian: '4.5',
-    europe: '37⅓',
-    footLength: '23.5'
-  },
-  {
-    id: 4,
-    russia: '36.5',
-    greatBritian: '5',
-    europe: '38',
-    footLength: '24'
-  },
-]
-
-type TData = Unpacked<typeof mockData>
-const columns: IColumn<TData>[] = [
-  {
-    header: 'Россия',
-    dataKey: 'russia',
+    header: 'Название',
+    dataKey: 'name',
     sortable: true
   },
   {
-    header: 'Великобритания',
-    dataKey: 'greatBritian',
+    header: 'Количество',
+    dataKey: 'count',
     sortable: true
   },
   {
-    header: 'Европа',
-    dataKey: 'europe',
+    header: 'Дистанция',
+    dataKey: 'distance',
     sortable: true
-  },
-  {
-    header: 'Длина стопы',
-    dataKey: 'footLength',
-  },
+  }
 ]
 
 const TablePage = () => {
+  const [tableData, setTableData] = useState<ISampleTableData[]>([])
+  const { itemsPerPage, sortBy, sortDirection } = useContext(SampleTableContext)
 
-  const sortHandler = (sortingState: TSortingState<TData>) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await Api.selectData({
+        page: 0,
+        'per_page': 20,
+        'sort_desc': true,
+        'sort_key': 'count'
+      })
+      setTableData(result)
+    }
+    fetchData()
+  }, [itemsPerPage, sortBy, sortDirection])
+
+  const sortHandler = (sortingState: TSortingState<ISampleTableData>) => {
     if (sortingState) {
       console.log(sortingState)
     }
@@ -70,14 +56,15 @@ const TablePage = () => {
     <>
       <div className="row mt-3 mb-3">
         <Table
-          data={mockData}
+          data={tableData}
           columns={columns}
           onSort={sortHandler}
         />
       </div>
+
       <div className="row">
         {/*<div className="d-flex justify-content-center">*/}
-          <Pagination/>
+        <Pagination/>
         {/*</div>*/}
       </div>
     </>
