@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect } from 'react'
 import Table from "../../Table/Table"
 import { IColumn, TSortingState } from "../../Table/Table.types"
 import Pagination from "../../Pagination/Pagination"
 import { TSampleTableData } from "../../../Api/Api.types"
-import { SampleTableContext } from "../../../SampleTableContext/SampleTableContext"
+import { SampleTableContext } from "../../../store/sampleTable/context"
 import Api from "../../../Api/Api"
+import { EDataActionTypes } from "../../../store/sampleTable/reducers"
 
 const columns: IColumn<TSampleTableData>[] = [
   {
@@ -30,8 +31,7 @@ const columns: IColumn<TSampleTableData>[] = [
 ]
 
 const TablePage = () => {
-  const [tableData, setTableData] = useState<TSampleTableData[]>([])
-  const { itemsPerPage, sortBy, sortDirection } = useContext(SampleTableContext)
+  const { state, dispatch } = useContext(SampleTableContext)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -41,10 +41,10 @@ const TablePage = () => {
         'sort_desc': true,
         'sort_key': 'count'
       })
-      setTableData(result)
+      dispatch({ type: EDataActionTypes.LOAD, payload: result })
     }
     fetchData()
-  }, [itemsPerPage, sortBy, sortDirection])
+  }, [dispatch])
 
   const sortHandler = (sortingState: TSortingState<TSampleTableData>) => {
     if (sortingState) {
@@ -56,7 +56,7 @@ const TablePage = () => {
     <>
       <div className="row mt-3 mb-3">
         <Table
-          data={tableData}
+          data={state.data}
           columns={columns}
           onSort={sortHandler}
         />

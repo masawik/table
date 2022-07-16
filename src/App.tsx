@@ -1,21 +1,14 @@
 import React from 'react'
 import TablePage from "./components/pages/TablePage/TablePage"
-import { SampleTableContext } from "./SampleTableContext/SampleTableContext"
-import { ESortDirections } from "./components/Table/Table.types"
-
-const tableSettingInitialValue = {
-  itemsPerPage: 20,
-  sortBy: null,
-  sortDirection: ESortDirections.ASC
-}
+import { SampleTableProvider } from "./store/sampleTable/context"
 
 function App() {
   return (
-    <SampleTableContext.Provider value={tableSettingInitialValue}>
+    <SampleTableProvider>
       <div className="container">
         <TablePage/>
       </div>
-    </SampleTableContext.Provider>
+    </SampleTableProvider>
   )
 }
 
