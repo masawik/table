@@ -1,5 +1,5 @@
 import { TSampleTableData } from "../../Api/Api.types"
-import { EDataActionTypes, ESettingsActionTypes, TActions } from "./actions"
+import { EDataActionTypes, EPaginationActionTypes, ESettingsActionTypes, TActions } from "./actions"
 
 // ----- data -----
 const dataInitialState = [] as TSampleTableData[]
@@ -16,7 +16,7 @@ export const dataReducer = (state: TDataState, action: TActions) => {
 
 // ----- settings -----
 const settingsInitialState = {
-  rowsPerPage: 20,
+  rowsPerPage: 5,
   sortKey: null as null | string,
   sortDesc: false as boolean
 }
@@ -35,14 +35,40 @@ export const settingsReducer = (state: TSettingsState, action: TActions) => {
 }
 
 
+// ----- pagination -----
+const paginationInitialState = {
+  currentPage: 0 as number,
+  totalPages: 0 as number
+}
+type TPaginationState = typeof paginationInitialState
+export const paginationReducer = (state: TPaginationState, action: TActions) => {
+  switch (action.type) {
+    case EPaginationActionTypes.SET_CURRENT_PAGE:
+      return { ...state, currentPage: action.payload }
+
+    case EPaginationActionTypes.SET_TOTAL_PAGES:
+      return { ...state, totalPages: action.payload }
+
+    case ESettingsActionTypes.SET_SORT_DESC:
+    case ESettingsActionTypes.SET_SORT_KEY:
+      return { ...state, currentPage: 0 }
+
+    default:
+      return state
+  }
+}
+
+
 // ----- root -----
 export const initialState = {
   data: dataInitialState,
-  settings: settingsInitialState
+  settings: settingsInitialState,
+  pagination: paginationInitialState
 }
 export type TSampleTableState = typeof initialState
 
-export const rootReducer = ({ data, settings }: TSampleTableState, action: TActions) => ({
+export const rootReducer = ({ data, settings, pagination }: TSampleTableState, action: TActions) => ({
   data: dataReducer(data, action),
-  settings: settingsReducer(settings, action)
+  settings: settingsReducer(settings, action),
+  pagination: paginationReducer(pagination, action)
 })

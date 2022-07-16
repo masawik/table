@@ -5,7 +5,7 @@ import Pagination from "../../Pagination/Pagination"
 import { TSampleTableData } from "../../../Api/Api.types"
 import { SampleTableContext } from "../../../store/sampleTable/context"
 import Api from "../../../Api/Api"
-import { loadData, setSortDesc, setSortKey, setTotalPages } from "../../../store/sampleTable/actions"
+import { loadData, setCurrentPage, setSortDesc, setSortKey, setTotalPages } from "../../../store/sampleTable/actions"
 
 const columns: IColumn<TSampleTableData>[] = [
   {
@@ -38,7 +38,7 @@ const TablePage = () => {
       const { rowsPerPage, sortKey, sortDesc } = state.settings
 
       const result = await Api.selectData({
-        page: 0,
+        page: state.pagination.currentPage,
         'per_page': rowsPerPage,
         'sort_desc': sortDesc,
         ...(sortKey && { 'sort_key': sortKey })
@@ -57,6 +57,11 @@ const TablePage = () => {
     }
   }
 
+  const pageChangeHandler = (newPage: number) => {
+    if (state.pagination.currentPage === newPage) return
+    dispatch(setCurrentPage(newPage))
+  }
+
   return (
     <>
       <div className="row mt-3 mb-3">
@@ -71,7 +76,12 @@ const TablePage = () => {
         {/*<div className="d-flex justify-content-center">*/}
         {
           state.pagination.totalPages > 1
-          && <Pagination/>
+          &&
+          <Pagination
+            currentPage={state.pagination.currentPage}
+            totalPages={state.pagination.totalPages}
+            onPageChange={pageChangeHandler}
+          />
         }
         {/*</div>*/}
       </div>
