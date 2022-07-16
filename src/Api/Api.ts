@@ -8,7 +8,13 @@ class Api {
 
   async selectData(params: TSelectItemsParams): Promise<TSampleTableData[]> {
     let response: AxiosResponse<TSampleTableData[]>
-    const reqUrl = `${this.API_URL}/table-items?${convertObjectToQueryParamString(params)}`
+
+    const paramsToSend = {
+      ...params,
+      'sort_desc': Number(params.sort_desc)
+    }
+
+    const reqUrl = `${this.API_URL}/table-items?${convertObjectToQueryParamString(paramsToSend)}`
 
     try {
       response = await axios.get<TSampleTableData[]>(reqUrl)

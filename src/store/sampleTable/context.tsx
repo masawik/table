@@ -11,7 +11,8 @@ export const SampleTableContext = React.createContext<{
   dispatch: () => null
 })
 
-export const SampleTableProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const SampleTableProvider: React.FC<{ children: React.ReactNode }> =
+  ({ children }) => {
   const [state, dispatch] = useReducer(rootReducer, initialState)
 
   return (

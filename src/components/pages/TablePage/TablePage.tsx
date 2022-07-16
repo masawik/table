@@ -1,11 +1,11 @@
 import React, { useContext, useEffect } from 'react'
 import Table from "../../Table/Table"
-import { IColumn, TSortingState } from "../../Table/Table.types"
+import { ESortDirections, IColumn, TSortingState } from "../../Table/Table.types"
 import Pagination from "../../Pagination/Pagination"
 import { TSampleTableData } from "../../../Api/Api.types"
 import { SampleTableContext } from "../../../store/sampleTable/context"
 import Api from "../../../Api/Api"
-import { loadData } from "../../../store/sampleTable/actions"
+import { loadData, setSortDesc, setSortKey } from "../../../store/sampleTable/actions"
 
 const columns: IColumn<TSampleTableData>[] = [
   {
@@ -35,20 +35,24 @@ const TablePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const { rowsPerPage, sortKey, sortDesc } = state.settings
+
       const result = await Api.selectData({
         page: 0,
-        'per_page': 20,
-        'sort_desc': true,
-        'sort_key': 'count'
+        'per_page': rowsPerPage,
+        'sort_desc': sortDesc,
+        ...(sortKey && { 'sort_key': sortKey })
       })
       dispatch(loadData(result))
     }
     fetchData()
-  }, [dispatch])
+  }, [dispatch, state.settings])
 
   const sortHandler = (sortingState: TSortingState<TSampleTableData>) => {
     if (sortingState) {
-      console.log(sortingState)
+      dispatch(setSortKey(sortingState.dataKey))
+      const isSortDesc = sortingState.direction === ESortDirections.DESC
+      dispatch(setSortDesc(isSortDesc))
     }
   }
 

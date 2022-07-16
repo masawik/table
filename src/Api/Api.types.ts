@@ -9,6 +9,6 @@ export type TSampleTableData = {
 export type TSelectItemsParams = {
   'per_page': number
   'page': number
-  'sort_key': string
+  'sort_key'?: string
   'sort_desc': boolean
 }
